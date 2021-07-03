@@ -19,25 +19,48 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Triplicate T4c" :size 18)
-      doom-variable-pitch-font (font-spec :family "Charter" :size 16))
+(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'modus-operandi)
+(setq doom-theme 'doom-solarized-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
+
+(after! org
+  (setq org-agenda-todo-ignore-scheduled 'future)
+  (setq org-agenda-span 3)
+  (setq org-agenda-custom-commands
+        '(("n" "Daily tasks"
+           ((agenda "" nil)
+            (todo "STRT" nil)
+            (todo "LOOP" nil)
+            (todo "TODO" nil)
+            (todo "WAIT" nil)
+            (todo "HOLD" nil))
+           nil)
+          ("i" "IDEA"
+           ((agenda "" nil)
+            (todo "IDEA" nil)))))
+  (push '("i" "Idea" entry
+           (file+headline +org-capture-todo-file "Inbox")
+           "* IDEA %?\n%i\n%a" :prepend t)
+        org-capture-templates))
+
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
 ;; Theme config
-(setq modus-operandi-theme-bold-constructs t)
-(setq modus-operandi-theme--constructs t)
+(after! modus-operandi-theme
+  (setq modus-operandi-theme-override-colors-alist '(()))
+  (setq modus-themes-slanted-constructs t)
+  (setq modus-themes-bold-constructs nil)
+  (setq modus-themes-paren-match 'intense))
 
 ;; Required for pytest
 (setq comint-prompt-read-only nil)
@@ -61,8 +84,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(after! modus-operandi-theme
-  (setq modus-operandi-theme-bold-constructs t))
 
 (after! evil
   (setq evil-escape-key-sequence "fd")
@@ -81,14 +102,34 @@
   (flycheck-remove-next-checker 'python-flake8 'python-mypy))
 
 (after! python
-  (setq-hook! 'python-mode-hook +format-with :none)
-  (setq-hook! 'python-mode-hook +format-with-lsp t)
+  (setq py-isort-options '("--profile=django"))
+  (setq lsp-pylsp-configuration-sources '("flake8"))
+  (setq +python-ipython-repl-args '("-i" "--simple-prompt" "--no-color-info"))
+  (setq +python-jupyter-repl-args '("--simple-prompt"))
   (add-hook! 'python-mode-hook
     (add-hook 'before-save-hook '+format/buffer 0 t)
-    (add-hook 'before-save-hook 'py-isort-before-save 0 t)))
+    (add-hook 'before-save-hook 'py-isort-before-save)))
+
+(after! esh-mode
+  (map! :map eshell-mode-map
+        :i "C-c C-c" #'eshell-interrupt-process
+        :i "<up>" #'eshell-previous-matching-input-from-input
+        :i "<down>" #'eshell-next-matching-input-from-input))
 
 (after! projectile
   (setq projectile-indexing-method 'hybrid))
+
+(after! racket-mode
+  (add-hook 'racket-mode-hook #'racket-xp-mode))
+
+(after! deft
+  (setq deft-directory "~/org")
+  (setq deft-recursive t))
+
+(setq inferior-lisp-program "ros -Q run")
+
+(after! pollen-mode
+  (add-hook 'pollen-mode-hook #'spell-fu-mode))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -98,3 +139,37 @@
  '(custom-safe-themes
    (quote
     ("0cb1b0ea66b145ad9b9e34c850ea8e842c4c4c83abe04e37455a1ef4cc5b8791" default))))
+
+
+;; Functions for drn
+
+(setq +drn/bin-path "~/common-lisp/daily-reading-notes/daily-reading-notes")
+
+(defun +drn/new-post ()
+  (interactive)
+  (let ((dir (projectile-project-root)))
+    (find-file (shell-command-to-string
+                (format "%s new-post %s" +drn/bin-path dir)))
+    (goto-char (point-min))
+    (forward-line 5)))
+
+(defun +drn/new-book ()
+  (interactive)
+  (let ((dir (projectile-project-root))
+        (title (read-string "Enter book title: ")))
+    (find-file (shell-command-to-string
+                (format "%s new-book %s '%s'" +drn/bin-path dir title)))
+    (goto-char (point-min))
+    (forward-line 5)))
+
+(defun setup-bro ()
+  (interactive)
+  (+workspace-switch "bro" t)
+  (find-file "~/horizon/bro/manage.py")
+  (+eshell/toggle nil))
+
+(defun setup-bro-clj ()
+  (interactive)
+  (+workspace-switch "clj" t)
+  (find-file "~/horizon/bro/clj/project.clj")
+  (cider-jack-in-cljs '(:cljs-repl-type bro)))

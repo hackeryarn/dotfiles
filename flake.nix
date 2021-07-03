@@ -15,20 +15,12 @@
       repo = "home-manager";
       ref = "master";
     };
-
-    neuron = {
-      type = "github";
-      owner = "srid";
-      repo = "neuron";
-      ref = "master";
-      flake = false;
-    };
   };
 
-  outputs = { self, nixpkgs, home-manager, neuron }:
+  outputs = { self, nixpkgs, home-manager }:
     let
       system = "x86_64-linux";
-      pkgs = (import nixpkgs) {
+      pkgs = import nixpkgs {
         inherit system;
         config = { allowUnfree = true; };
       };
@@ -41,16 +33,23 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.artem = import ./home/artem.nix {
-              inherit system;
-              inherit neuron;
-            };
+            home-manager.users.artem = import ./home/artem.nix;
           }
         ];
       };
+
       nixosConfigurations.oryxpro = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [ ./oryxpro/configuration.nix ];
+        modules = [
+          ./oryxpro/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.hackeryarn = import ./home/hackeryarn.nix;
+            home-manager.users.artem = import ./home/artem.nix;
+          }
+        ];
       };
     };
 }

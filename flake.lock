@@ -5,44 +5,27 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1602339342,
-        "narHash": "sha256-Qh+BDMfBmMSnhEhXSyF539aKGUGbq1IKBmtghiG/VhY=",
+        "lastModified": 1614028896,
+        "narHash": "sha256-MeXlsYzPn/aWdfqRJvW/yBfPdQ0qcQCkDvu2+9X2Q4E=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b5847455066d0191cebd6b140531cc154443e316",
+        "rev": "7582090eb0f64144995d4fb9d5e52343e2c3f64b",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "ref": "master",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "neuron": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1602434456,
-        "narHash": "sha256-3petAJBMiJk52xEl4b0W/oyYRHySbYpfB5CoWdv4Adw=",
-        "owner": "srid",
-        "repo": "neuron",
-        "rev": "a33ccad0b84bef9dc1c06ccd913f0e5d4724881c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "srid",
-        "ref": "master",
-        "repo": "neuron",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1602362665,
-        "narHash": "sha256-XwCbKiEsKFS1UQBwjKKdNknSSGWMMAMObVbyr+/JF2Q=",
+        "lastModified": 1614051432,
+        "narHash": "sha256-btNYWxiJLblJcap00/Dw+5TVzGtogc7yZr85O0e/C/M=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "2e087fe0d968d51ce61521b43a121a662c5a5edf",
+        "rev": "fc4fa2847cf4b85fa93f56a1d2a0935a7c6f911d",
         "type": "github"
       },
       "original": {
@@ -52,11 +35,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1602066138,
-        "narHash": "sha256-aV0PWKhVYQNLQuFW2qfBXa3JWmPPKSHFJ65ac83JMzE=",
+        "lastModified": 1613761605,
+        "narHash": "sha256-lUF6UPR96ZzQC0faNXBHLoLhNAdxZqYqDwz0PaIZ/7Y=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "420f89ceb267b461eed5d025b6c3c0e57703cc5c",
+        "rev": "9816b99e71c3504b0b4c1f8b2e004148460029d4",
         "type": "github"
       },
       "original": {
@@ -69,7 +52,6 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "neuron": "neuron",
         "nixpkgs": "nixpkgs_2"
       }
     }

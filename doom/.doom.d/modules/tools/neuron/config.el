@@ -28,7 +28,6 @@
     (counsel-find-file)))
 
 (use-package! neuron-mode
-  :mode (("\\.md" . neuron-mode))
   ; Enable link autocompletion globally
   :hook (neuron-mode . company-neuron-setup)
   :init
@@ -55,7 +54,7 @@
           ;;   "k" #'neuron-rib-kill
           ;;   )
 
-        
+
   :config
   (map! :map neuron-mode-map
         :localleader
@@ -71,9 +70,11 @@
           :ni "T" #'neuron-add-tags
           :ni "o" #'neuron-open-current-zettel
           :ni "l" #'neuron-create-and-insert-zettel-link
-          :ni "i" #'neuron-insert-new-zettel
           :v  "L" #'neuron-create-zettel-from-selection
           :ni "s" #'neuron-insert-static-link
           :ni "c" #'neuron-toggle-connection-type))
+          
+        
+
   (map! :leader "sz" #'search-zettelkasten)
   (map! :leader "fz" #'find-file-in-zettelkasten))

@@ -3,10 +3,17 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../nixos/shared.nix
+    ../wm/xmonad.nix
+    ../shared.nix
   ];
 
-  virtualisation.docker.enable = true;
+  # Horizon VPN
+  services.openvpn.servers = {
+    horizonVPN = {
+      config = "config /root/nixos/openvpn/horizon.conf";
+      autoStart = false;
+    };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.artem = {

@@ -3,14 +3,14 @@
                    (dirname (current-filename))
                    "/init.d"))
 
-(use-modules (udiskie-service)
-             (kanshi-service)
+(use-modules (kanshi-service)
              (sway-service)
-             (waybar-service))
+             (waybar-service)
+             (udiskie-service))
 
-(start udiskie)
 (start kanshi)
 (start sway)
 (start waybar)
+(start udiskie)
 
 (action 'shepherd 'daemonize)

@@ -4,9 +4,9 @@
     "height": 40, // Waybar height (to be removed for auto height)
     // "width": 1280, // Waybar width
     // Choose the order of the modules
-    "modules-left": ["network", "cpu", "memory", "temperature", "backlight", "sway/mode", "custom/media"],
+    "modules-left": ["network", "cpu", "memory", "temperature", "backlight", "sway/mode"],
     "modules-center": ["sway/workspaces"],
-    "modules-right": ["idle_inhibitor", "pulseaudio",  "battery", "battery#bat2", "clock"],
+    "modules-right": ["idle_inhibitor", "pulseaudio",  "battery", "clock", "tray"],
     // Modules configuration
     "sway/workspaces": {
         "disable-scroll": true,
@@ -117,8 +117,8 @@
     },
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
         "format-etherret": "{ifname}: {ipaddr}/{cidr} ",
+        "format-wifi": "{essid} ({signalStrength}%) ",
         "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr} "

@@ -9,9 +9,8 @@
     #:provides '(kanshi)
     #:docstring "Runs `kanshi' to manage displays"
     #:start (make-forkexec-constructor
-             '("kanshi")
-             #:log-file (string-append (getenv "HOME")
-                                       "/log/kanshi.log"))
+             '("/home/hackeryarn/.guix-profile/bin/kanshi")
+             #:log-file "/home/hackeryarn/log/kanshi.log")
     #:stop (make-kill-destructor)
     #:respawn? #t))
 (register-services kanshi)

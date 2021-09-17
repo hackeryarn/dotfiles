@@ -9,9 +9,8 @@
     #:provides '(waybar)
     #:docstring "Runs `waybar' to create a sway bar"
     #:start (make-forkexec-constructor
-             '("waybar")
-             #:log-file (string-append (getenv "HOME")
-                                       "/log/waybar.log"))
+             '("/home/hackeryarn/.guix-profile/bin/waybar")
+             #:log-file "/home/hackeryarn/log/waybar.log")
     #:stop (make-kill-destructor)
     #:respawn? #t))
 (register-services waybar)

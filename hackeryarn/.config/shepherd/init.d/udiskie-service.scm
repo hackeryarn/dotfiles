@@ -9,9 +9,8 @@
     #:provides '(udiskie)
     #:docstring "Runs `udiskie' with the tray option"
     #:start (make-forkexec-constructor
-             '("udiskie" "--tray")
-             #:log-file (string-append (getenv "HOME")
-                                       "/log/udiskie.log"))
+             '("/home/hackeryarn/.guix-profile/bin/udiskie" "--tray")
+             #:log-file "/home/hackeryarn/log/udiskie.log")
     #:stop (make-kill-destructor)
     #:respawn? #t))
 (register-services udiskie)

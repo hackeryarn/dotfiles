@@ -4,13 +4,11 @@
                    "/init.d"))
 
 (use-modules (kanshi-service)
-             (sway-service)
-             (waybar-service)
-             (udiskie-service))
+             (udiskie-service)
+             (waybar-service))
 
 (start kanshi)
-(start sway)
-(start waybar)
 (start udiskie)
+(start waybar)
 
 (action 'shepherd 'daemonize)

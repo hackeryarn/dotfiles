@@ -9,9 +9,9 @@
     #:provides '(sway)
     #:docstring "Runs `sway' to start sway"
     #:start (make-forkexec-constructor
-             '("dbus-run-session" "sway" "--debug")
-             #:log-file (string-append (getenv "HOME")
-                                       "/log/sway.log"))
+             '("/home/hackeryarn/.guix-profile/bin/dbus-run-session"
+               "/home/hackeryarn/.guix-profile/bin/sway" "--debug")
+             #:log-file "/home/hackeryarn/log/sway.log")
     #:stop (make-kill-destructor)
     #:respawn? #t))
 (register-services sway)

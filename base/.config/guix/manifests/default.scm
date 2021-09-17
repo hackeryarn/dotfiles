@@ -1,7 +1,6 @@
 (specifications->manifest
  '("glibc-locales"
    "shepherd"
-   "mit-scheme"
    "guile"
    ;; hackeryarn
    "kanshi"
@@ -11,4 +10,6 @@
    "fontconfig"
    "font-iosevka"
    "font-awesome"
-   "dbus"))
+   "dbus"
+   "flatpak"
+   "mit-scheme"))

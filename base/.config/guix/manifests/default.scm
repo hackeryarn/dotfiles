@@ -12,4 +12,8 @@
    "font-awesome"
    "dbus"
    "flatpak"
-   "mit-scheme"))
+   "mit-scheme"
+   "obs"
+   "xdg-desktop-portal-wlr"
+   "mu"
+   "isync"))

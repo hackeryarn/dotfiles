@@ -1,0 +1,582 @@
+:PROPERTIES:
+:header-args:emacs-lisp: :tangle no
+:END:
+#+TITLE: Doom Config
+
+#+begin_src emacs-lisp :noweb no-export :tangle ../hackeryarn/.config/doom/config.el
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+;;; Base doom config
+
+<<doom-config>>
+
+;;; General mode configs
+
+(after! evil
+  <<evil-config>>)
+
+(after! flycheck
+  <<flycheck-config>>)
+
+(after! format-all
+  <<format-all-config>>)
+
+(after! lsp-mode
+  <<lsp-config>>)
+
+(after! yasnippet
+  <<yasnippet-config>>)
+
+(after! projectile-mode
+  <<projectile-config>>
+  (setq projectile-indexing-method 'hybrid))
+
+;;; Language mode configs
+
+<<lang-config>>
+
+;;; Helper functions
+
+<<helpers>>
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export :tangle ../hackeryarn/.config/doom/init.el
+;;; init.el -*- lexical-binding: t; -*-
+
+(doom! :input
+       <<input-init>>
+       :completion
+       <<completion-init>>
+       :ui
+       <<ui-init>>
+       :editor
+       <<editor-init>>
+       :emacs
+       <<emacs-init>>
+       :term
+       <<term-init>>
+       :checkers
+       <<checkers-init>>
+       :tools
+       <<tools-init>>
+       :lang
+       <<lang-init>>
+       :email
+       <<email-init>>
+       :app
+       <<app-init>>
+       :config
+       <<config-init>>)
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export :tangle ../hackeryarn/.config/doom/packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+<<packages-config>>
+#+end_src
+* Identity
+Some functionality uses this to identify you, e.g. GPG configuration, email
+clients, file templates and snippets.
+
+#+begin_src emacs-lisp :noweb-ref doom-config
+(setq user-full-name "Artem Chernyak"
+      user-mail-address "artemchernyak@gmail.com")
+#+end_src
+* Theme
+Currently I am using Solarized with FiraCode font.
+
+#+begin_src emacs-lisp :noweb-ref doom-config
+(setq doom-theme 'doom-solarized-light)
+(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18))
+(setq display-line-numbers-type t)
+(setq comint-prompt-read-only nil)
+#+end_src
+* Base Settings
+Enable local variables in ~.dir-locals.el~ (especially important for guix)
+#+begin_src emacs-lisp :noweb-ref doom-config
+(setq-default enable-local-variables t)
+#+end_src
+* Completion
+Enable code completion with ~company~.
+#+begin_src emacs-lisp :noweb-ref completion-init
+company
+#+end_src
+
+Enable emacs completion with ~ivy~.
+#+begin_src emacs-lisp :noweb-ref completion-init
+(ivy +fuzzy +prescient +all-the-icons-ivy)
+#+end_src
+* UI
+Base ui options.
+#+begin_src emacs-lisp :noweb-ref ui-init
+hl-todo
+modeline
+ophints
+(popup +defaults)
+vc-gutter
+vi-tilde-fringe
+workspaces
+#+end_src
+** Deft
+#+begin_src emacs-lisp :noweb no-export :noweb-ref doom-config
+(after! deft
+  <<deft-config>>)
+#+end_src
+
+Enable int init.
+#+begin_src emacs-lisp :noweb-ref ui-init
+deft
+#+end_src
+
+Make deft work recursively.
+#+begin_src emacs-lisp :noweb-ref deft-config
+(setq deft-recursive t)
+#+end_src
+** Doom
+Enable doom ui elements.
+#+begin_src emacs-lisp :noweb-ref ui-init
+doom
+doom-dashboard
+doom-quit
+#+end_src
+* Editor
+Base editor options.
+
+#+begin_src emacs-lisp :noweb yes :noweb-ref editor-init
+<<evil-init>>
+file-templates
+fold
+(format +onsave)
+(parinfer +rust)
+snippets
+#+end_src
+** Evil
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref evil-config
+:END:
+Enable evil everywhere.
+#+begin_src emacs-lisp :noweb-ref evil-init
+(evil +everywhere)
+#+end_src
+
+Setup ~fd~ as escape.
+#+begin_src emacs-lisp
+(setq evil-escape-key-sequence "fd")
+#+end_src
+
+Setup snipe scope to make it easier to navigate around buffers.
+#+begin_src emacs-lisp
+(setq evil-escape-key-sequence "fd")
+#+end_src
+
+Allow pasting using ~C-S-v~ to mimic shell.
+#+begin_src emacs-lisp
+(evil-global-set-key 'insert (kbd "C-S-v") 'evil-paste-before)
+#+end_src
+* Emacs
+Base emacs options.
+#+begin_src emacs-lisp :noweb-ref emacs-init
+dired
+electric
+undo
+vc
+#+end_src
+* Term
+~eshell~ is the default term unless it falls short. Then I can use vterm.
+#+begin_src emacs-lisp :noweb-ref term-init
+eshell
+vterm
+#+end_src
+
+** Eshell
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref eshell-config
+:END:
+
+#+begin_src emacs-lisp :noweb no-export :noweb-ref lang-config
+(after! esh-mode
+  <<esh-config>>)
+#+end_src
+** Keybindings
+
+#+begin_src emacs-lisp :noweb-ref esh-config
+(map! :map eshell-mode-map
+    :i "C-c C-c" #'eshell-interrupt-process
+    :i "<up>" #'eshell-previous-matching-input-from-input
+    :i "<down>" #'eshell-next-matching-input-from-input)
+#+end_src
+* Checkers
+#+begin_src emacs-lisp :noweb no-export :noweb-ref doom-config
+(after! ispell
+  <<ispell-config>>)
+#+end_src
+Enable syntax, spelling, and grammar checkers.
+#+begin_src emacs-lisp :noweb-ref checkers-init
+syntax
+(spell +aspell)
+grammar
+#+end_src
+
+Set ~aspell~ dictionary:
+
+#+begin_src emacs-lisp :noweb-ref ispell-config
+(setq ispell-dictionary "en")
+#+end_src
+* Tools
+Tools init.
+#+begin_src emacs-lisp :noweb-ref tools-init
+ansible
+direnv
+docker
+editorconfig
+(eval +overlay)
+lookup
+lsp
+magit
+(pass +auth)
+pdf
+rgb
+taskrunner
+#+end_src
+** Envrc
+Make format-all aware of envrc
+#+begin_src emacs-lisp :noweb-ref format-all-config
+(advice-add 'format-all-buffer :around #'envrc-propagate-environment)
+#+end_src
+
+* Languages
+Languages init
+#+begin_src emacs-lisp :noweb-ref lang-init
+clojure
+common-lisp
+emacs-lisp
+(haskell +lsp)
+hy
+json
+javascript
+julia
+latex
+markdown
+nim
+nix
+(org +roam2)
+plantuml
+purescript
+(python +lsp +pyright)
+(racket +xp)
+rest
+(ruby +rails)
+(scheme
+ +guile
+ +mit
+ +chez
+ +gambit)
+sh
+web
+yaml
+pollen
+#+end_src
+** Python
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref python-config
+:END:
+
+#+begin_src emacs-lisp :noweb no-export :noweb-ref lang-config
+(after! python
+  <<python-config>>)
+#+end_src
+
+*** Formatting
+Disable formatting with LSP so I can use a custom formatting.
+#+begin_src emacs-lisp :noweb-ref lsp-config
+  (setq +format-with-lsp nil)
+#+end_src
+
+Ensure that I only run flake8 as the checker.
+#+begin_src emacs-lisp :noweb-ref flycheck-config
+(flycheck-remove-next-checker 'python-flake8 'python-pylint)
+(flycheck-remove-next-checker 'python-flake8 'python-mypy)
+#+end_src
+
+Set autopep8 as the default formatter for python.
+#+begin_src emacs-lisp :noweb-ref format-all-config
+(set-formatter! 'autopep8 "autopep8 -" :modes '(python-mode))
+#+end_src
+
+Add hooks for autopep8 and isort.
+#+begin_src emacs-lisp
+(setq-hook! 'python-mode-hook +format-with 'autopep8)
+(add-hook! 'python-mode-hook
+  (add-hook 'before-save-hook 'py-isort-before-save)
+  (add-hook 'before-save-hook '+format/buffer))
+#+end_src
+
+Add Django option for isort.
+#+begin_src emacs-lisp
+(setq py-isort-options '("--profile=django"))
+#+end_src
+*** Snippets
+Create a data migration function definition for Django.
+#+begin_src snippet :tangle ../hackeryarn/.config/doom/snippets/python-mode/data-migration-function
+# -*- mode: snippet -*-
+# name: data-migration-function
+# uuid: dmf
+# key: dmf
+# --
+
+def ${1:func_name}(apps, _):
+    ${2:class} = apps.get_model('${3:app}', '$2')
+    $0
+#+end_src
+
+Declare a migration function to run.
+#+begin_src snippet :tangle ../hackeryarn/.config/doom/snippets/python-mode/data-migration-operation
+# -*- mode: snippet -*-
+# name: data-migration-operation
+# uuid: dmo
+# key: dmo
+# condition: t
+# --
+
+migrations.RunPython(${1:function})
+#+end_src
+** REPL
+Setup ipython and jupyter options when running the repl from emacs.
+#+begin_src emacs-lisp
+(setq +python-ipython-repl-args '("-i" "--simple-prompt" "--no-color-info"))
+(setq +python-jupyter-repl-args '("--simple-prompt"))
+#+end_src
+
+** Clojure
+#+begin_src emacs-lisp :noweb no-export :noweb-ref lang-config
+(after! cider
+  <<cider-config>>)
+#+end_src
+** Racket
+:PROPERTIES:
+:header-args:emacs-lisp:
+:END:
+#+begin_src emacs-lisp :noweb no-export :noweb-ref lang-config
+(after! racket
+  <<racket-config>>)
+
+(after! pollen-mode
+  <<pollen-config>>)
+#+end_src
+
+Add a hook for ~racket-xp-mode~ to enable better repl and docs integration.
+#+begin_src emacs-lisp :noweb-ref racket-config
+(add-hook 'racket-mode-hook #'racket-xp-mode)
+#+end_src
+
+*** Pollen
+Configure pollen module.
+#+begin_src emacs-lisp :tangle ../hackeryarn/.config/doom/modules/lang/pollen/config.el
+;;; lang/pollen/config.el -*- lexical-binding: t; -*-
+
+(use-package! pollen-mode
+  :hook (pollen-mode . visual-line-mode)
+  :config
+  (map! :localleader
+        :map pollen-mode-map
+        "s" #'pollen-server-start
+        "q" #'pollen-server-stop))
+#+end_src
+
+Pollen module packages
+#+begin_src emacs-lisp :tangle ../hackeryarn/.config/doom/modules/lang/pollen/packages.el
+;; -*- no-byte-compile: t; -*-
+;;; lang/pollen/packages.el
+
+(package! pollen-mode)
+
+(when (featurep! :completion company)
+  (package! company-pollen))
+#+end_src
+
+Include pollen package.
+#+begin_src emacs-lisp :noweb-ref packages-config
+(package! pollen-mode)
+#+end_src
+
+
+Enable spell checking in pollen mode.
+#+begin_src emacs-lisp :noweb-ref pollen-config
+(add-hook 'pollen-mode-hook #'spell-fu-mode)
+#+end_src
+** Lisp
+Set inverior lisp to roswell.
+#+being_src emacs-lisp :noweb-ref lang-config
+(setq inferior-lisp-program "ros -Q run")
+#+end_src
+** Scehem
+#+begin_src emacs-lisp :noweb no-export :noweb-ref lang-config
+(after! geiser-guile
+  <<guile-config>>)
+#+end_src
+*** Guix
+Add guix source as a load target.
+#+begin_src emacs-lisp :noweb-ref guile-config
+(add-to-list 'geiser-guile-load-path "~/src/hackeryarn/guix")
+#+end_src
+
+Add snippets for guix.
+#+begin_src emacs-lisp :noweb-ref yasnippet-config
+(add-to-list 'yas-snippet-dirs "~/src/hackeryarn/guix/etc/snippets")
+#+end_src
+
+Setup copy ~guix-copyright~.
+#+begin_src emacs-lisp :noweb-ref helpers
+(load-file "~/src/hackeryarn/guix/etc/copyright.el")
+(setq copyright-names-regexp
+  (format "%s <%s>" user-full-name user-mail-address))
+#+end_src
+** Org
+Default the org directory (required to run before org initialization).
+#+begin_src emacs-lisp :noweb-ref doom-config
+(setq org-directory "~/org/")
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export :noweb-ref doom-config
+(after! org
+  <<org-config>>)
+#+end_src
+
+Add ~org-fragtog~ package.
+#+begin_src emacs-lisp :noweb-ref packages-config
+(package! org-fragtog)
+#+end_src
+
+Enable ~org-fragtog-mode~.
+#+begin_src emacs-lisp :noweb-ref org-config
+(add-hook! 'org-mode-hook 'org-fragtog-mode)
+#+end_src
+
+*** Tangle
+Add a tangle hook so literate configs auto generate on save.
+#+begin_src emacs-lisp :tangle no :noweb-ref org-config
+(add-hook! 'org-mode-hook
+  (add-hook 'after-save-hook 'org-babel-tangle nil 'local))
+#+end_src
+*** Agenda
+Only show agenda into the future and make it span 3 days.
+#+begin_src emacs-lisp :tangle no :noweb-ref org-config
+(setq org-agenda-todo-ignore-scheduled 'future)
+(setq org-agenda-span 3)
+#+end_src
+
+Configure custom agenda commands:
+- ~TODO~: Indicates a task to do
+- ~STRT~: Indicates a started but unfinished task
+- ~WAIT~: Indicates a task that I cannot do yet because of something out of my control
+- ~HOLD~: Indicates a task that I made progress on but decided to wait on finishing
+- ~LOOP~: Indicates a repeating task
+- ~IDEA~: Indicates a task that might turn into a ~TODO~ but requires some more consideration
+#+begin_src emacs-lisp :tangle no :noweb-ref org-config
+(setq org-agenda-custom-commands
+    '(("n" "Daily tasks"
+       ((agenda "" nil)
+        (todo "STRT" nil)
+        (todo "LOOP" nil)
+        (todo "TODO" nil)
+        (todo "WAIT" nil)
+        (todo "HOLD" nil))
+       nil)
+      ("i" "IDEA"
+       ((agenda "" nil)
+        (todo "IDEA" nil)))))
+#+end_src
+
+Adds a capture template for ideas.
+#+begin_src emacs-lisp :tangle no :noweb-ref org-config
+(push '("i" "Idea" entry
+        (file+headline +org-capture-todo-file "Inbox")
+        "* IDEA %?\n%i\n%a" :prepend t)
+    org-capture-templates)
+#+end_src
+
+*** Deft
+Sets up deft for searching org file.
+#+begin_src emacs-lisp :noweb-ref deft-config
+(setq deft-directory "~/org")
+#+end_src
+* App
+App init.
+#+begin_src emacs-list :noweb-ref app-init
+irc
+(rss +org)
+#+end_src
+** IRC
+#+begin_src emacs-lisp :noweb-ref doom-config
+(after! circe
+ (set-irc-server! "irc.libera.chat"
+    `(:tls t
+      :port 6697
+      :nick "hackeryarn"
+      :sasl-username "hackeryarn"
+      :sasl-password (lambda (&rest _) (+pass-get-secret "web.libera.chat"))
+      :channels ("#emacs" "#scheme" "#guix"))))
+#+end_src
+* Config
+Config init.
+#+begin_src emacs-list :noweb-ref config-init
+(default +bindings +smpartparens)
+#+end_src
+* Helpers
+** DRN
+Helper function to generates new posts for [[https://dailyreadingnotes.com][Daily Reading Notes]].
+#+begin_src emacs-lisp :noweb-ref helpers
+(setq +drn/bin-path "~/common-lisp/daily-reading-notes/daily-reading-notes")
+
+(defun +drn/new-post ()
+  (interactive)
+  (let ((dir (projectile-project-root)))
+    (find-file (shell-command-to-string
+                (format "%s new-post %s" +drn/bin-path dir)))
+    (goto-char (point-min))
+    (forward-line 5)))
+
+(defun +drn/new-book ()
+  (interactive)
+  (let ((dir (projectile-project-root))
+        (title (read-string "Enter book title: ")))
+    (find-file (shell-command-to-string
+                (format "%s new-book %s '%s'" +drn/bin-path dir title)))
+    (goto-char (point-min))
+    (forward-line 5)))
+#+end_src
+** Work
+** Clojure
+Configure a custom repl type.
+#+begin_src emacs-lisp :noweb-ref cider-config
+(cider-register-cljs-repl-type
+  'bro
+  "(do (user/run)
+    (user/browser-repl))")
+#+end_src
+
+** Helpers
+Sets up the bro project in a new workspace.
+#+begin_src emacs-lisp :noweb-ref helpers
+(defun setup-bro ()
+  (interactive)
+  (+workspace-switch "bro" t)
+  (find-file "~/src/horizon/bro/manage.py")
+  (+eshell/toggle nil))
+#+end_src
+
+Sets up the bro ui project in a new workspace.
+#+begin_src emacs-lisp :noweb-ref helpers
+(defun setup-bro-clj ()
+  (interactive)
+  (+workspace-switch "clj" t)
+  (find-file "~/src/horizon/bro/clj/project.clj")
+  (cider-jack-in-cljs '(:cljs-repl-type bro)))
+#+end_src
+
+* Temporary Fixes
+Fixes the version of ~map.el~
+#+begin_src ebacs-lisp :noweb-ref packages-config
+(package! map :pin "bb50dbaafc0f71743bd9ffd5784258a9fd682c20")
+#+end_src

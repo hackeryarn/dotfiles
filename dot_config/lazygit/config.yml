@@ -1,0 +1,14 @@
+gui:
+  theme:
+    lightTheme: true
+    activeBorderColor:
+      - black
+      - bold
+    inactiveBorderColor:
+      - black
+    selectedLineBgColor:
+      - default
+os:
+  editCommand: "nvim"
+  editCommandTemplate:  "{{editor}} +{{line}} {{filename}}"
+promptToReturnFromSubprocess: false

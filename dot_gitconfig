@@ -1,0 +1,6 @@
+[user]
+    name = "hackeryarn"
+    email = "artemchernyak@gmail.com"
+
+[commit]
+	gpgsign = true
